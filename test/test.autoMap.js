@@ -4,6 +4,7 @@ const autoMap = require('../');
 
 describe('autoMap', () => {
   it('should perform a basic automap process', (allDone) => {
+    // this is just a variable we'll use later to confirm the test:
     let totalToVerify = 0;
     // the first param is a function that generates the list you want to map to
     // this one just creates and returns a list of random objects,
@@ -48,11 +49,11 @@ describe('autoMap', () => {
     const handleAutoResult = (currentItem, correspondingResultsForThatItem, done) => {
       expect(currentItem.x * currentItem.y).to.equal(correspondingResultsForThatItem.multiply);
       expect(correspondingResultsForThatItem.concat).to.equal(`${currentItem.x},${currentItem.y}`);
-      done(null, {
+      return {
         name: currentItem.string,
         description: correspondingResultsForThatItem.both,
         value: correspondingResultsForThatItem.multiply
-      });
+      };
     };
 
     // fourth param returns a list of all results:

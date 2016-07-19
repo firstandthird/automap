@@ -11,19 +11,13 @@ module.exports = (createList, createAutoSpec, handleAutoResult, reduceResults) =
     if (err) {
       throw err;
     }
-    const newResults = [];
-    async.each(listToProcess, (currentItem, currentItemDone) => {
+    async.map(listToProcess, (currentItem, currentItemDone) => {
       async.auto(createAutoSpec(currentItem), (autoErr, anAutoResult) => {
         if (autoErr) {
           throw autoErr;
         }
-        handleAutoResult(currentItem, anAutoResult, (handleAutoResultErr, handleAutoResultOutcome) => {
-          newResults.push(handleAutoResultOutcome);
-          currentItemDone();
-        });
+        currentItemDone(null, handleAutoResult(currentItem, anAutoResult));
       });
-    }, (eachErr) => {
-      reduceResults(eachErr, newResults);
-    });
+    }, reduceResults);
   });
 };
