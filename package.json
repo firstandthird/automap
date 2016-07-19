@@ -1,0 +1,32 @@
+{
+  "name": "automap",
+  "description": "covers a common use-case with async.auto/async.each. map an async.auto flow to each item in an asynchronous list, then reduce and return",
+  "version": "0.1.0",
+  "homepage": "https://github.com/firstandthird/autoMap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/firstandthird/autoMap.git"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "mocha -u bdd test/"
+  },
+  "dependencies": {
+    "async": "^2.0.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
+    "eslint": "^2.9.0",
+    "eslint-config-airbnb": "^8.0.0",
+    "eslint-config-firstandthird": "^2.0.0",
+    "eslint-plugin-import": "^1.5.0",
+    "eslint-plugin-jsx-a11y": "^1.0.2",
+    "eslint-plugin-react": "^5.1.1"
+  },
+  "keywords": [
+    "async",
+    "map",
+    "reduce"
+  ]
+}
