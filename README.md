@@ -40,23 +40,40 @@ autoMap(
           return done(null, character.hitPoints - Math.random() * 10);
         }
         return done();
-      }]
-    }
-  },
-  // if needed, update each character:
-  (character, results, done) => {
-    if (results.newHitPoints !== undefined) {
-      character.hitPoints = results.newHitPoints;
-      if (character.hitPoints < 0) {
-        character.status = 'dead';
+      }],
+      update: ['newHitPoints', (results, done) => {
+        if (results.newHitPoints !== undefined) {
+          character.hitPoints = results.newHitPoints;
+        if (character.hitPoints < 0) {
+          character.status = 'dead';
+        }
+        return character.update(done);          
       }
-      return character.update(done);          
+      return done();
     }
-    return done();
   },
-  (err, allCharacters) => {
-    // all characters are now done processing!
-    return allCharacters;
+  // the original character and the results of processing it are here,
+  // return a value to map
+  (character, results) => {
+    const event = {
+      type: 'attacked',
+      character      
+    };
+    if (results.newHitPoints === undefined) {
+      event.result = 'miss';
+    } else if (results.newHitPoints > 0) {
+      event.result = 'hit';
+    } else {
+      event.result = 'death';
+    }
+    return event;
+  },
+  (err, allEvents) => {
+    // all characters are now done processing,
+    // we have a list of events for each character:
+    allEvents.forEach( (event) => {
+      playEventAnimation(event);
+    });
   });
 });
 ```
