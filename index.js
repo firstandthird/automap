@@ -18,6 +18,7 @@ module.exports = (createListFunc, autoSpecObject, autoResultFunction, reduceResu
       // the currentItem:
       const getWrapper = (functionToWrap) => {
         if (functionToWrap.length === 1) {
+          return functionToWrap;
           // don't think we need to modify here
         } else if (functionToWrap.length === 2) {
           return (done) => {
