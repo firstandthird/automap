@@ -46,7 +46,7 @@ describe('autoMap', () => {
     };
 
     // third param is a function that lets you merge the results together:
-    const handleAutoResult = (currentItem, correspondingResultsForThatItem, done) => {
+    const handleAutoResult = (currentItem, correspondingResultsForThatItem) => {
       expect(currentItem.x * currentItem.y).to.equal(correspondingResultsForThatItem.multiply);
       expect(correspondingResultsForThatItem.concat).to.equal(`${currentItem.x},${currentItem.y}`);
       return {
