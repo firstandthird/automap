@@ -6,18 +6,18 @@ const async = require('async');
 // the third param is a callback function that combines the original listed item with the
 // result of applying async.auto to that item
 // fourth param takes in all results and processes all of them:
-module.exports = (createList, createAutoSpec, handleAutoResult, reduceResults) => {
+module.exports = (createList, createAutoSpec, mapAutoResult, done) => {
   createList((err, listToProcess) => {
     if (err) {
-      throw err;
+      return done(err);
     }
     async.map(listToProcess, (currentItem, currentItemDone) => {
       async.auto(createAutoSpec(currentItem), (autoErr, anAutoResult) => {
         if (autoErr) {
-          throw autoErr;
+          return done(autoErr);
         }
-        currentItemDone(null, handleAutoResult(currentItem, anAutoResult));
+        currentItemDone(null, mapAutoResult(currentItem, anAutoResult));
       });
-    }, reduceResults);
+    }, done);
   });
 };
