@@ -73,8 +73,7 @@ describe('autoMap', () => {
   it('should perform the automap process with an array as the first param', (allDone) => {
     // this is just a variable we'll use later to confirm the test:
     let totalToVerify = 0;
-    // the first param is a function that generates the list you want to map to
-    // this one just creates and returns a list of random objects,
+    // the first param will just be an array this time, not a function:
     const theList = [];
     for (let i = 0; i < 10; i++) {
       theList.push({
@@ -128,7 +127,8 @@ describe('autoMap', () => {
       expect(total).to.equal(totalToVerify);
       return total;
     };
-    // now, call automap and let it do the work:
+    // now, call automap and let it do the work
+    // notice that this time we're just handing it the list to work on:
     autoMap(theList, autoHandler, handleAutoResult, reduceResults);
     allDone();
   });
