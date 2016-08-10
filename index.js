@@ -7,7 +7,7 @@ const async = require('async');
 // result of applying async.auto to that item
 // fourth param takes in all results and processes all of them:
 module.exports = (createList, createAutoSpec, mapAutoResult, done) => {
-  createList((err, listToProcess) => {
+  const callback = (err, listToProcess) => {
     if (err) {
       return done(err);
     }
@@ -19,5 +19,11 @@ module.exports = (createList, createAutoSpec, mapAutoResult, done) => {
         currentItemDone(null, mapAutoResult(currentItem, anAutoResult));
       });
     }, done);
-  });
+  };
+  // if createList is a function:
+  if (typeof createList === 'function') {
+    return createList(callback);
+  }
+  // otherwise, assume createList is an array
+  return callback(null, createList);
 };
