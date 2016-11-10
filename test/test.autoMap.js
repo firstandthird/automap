@@ -70,6 +70,7 @@ describe('autoMap', () => {
     autoMap(listGenerator, autoHandler, handleAutoResult, reduceResults);
     allDone();
   });
+
   it('should perform the automap process with an array as the first param', (allDone) => {
     // this is just a variable we'll use later to confirm the test:
     let totalToVerify = 0;
@@ -119,6 +120,9 @@ describe('autoMap', () => {
 
     // fourth param returns a list of all results:
     const reduceResults = (err, allItems) => {
+      if (err) {
+        throw err;
+      }
       let total = 0;
       allItems.forEach((item) => {
         total += item.value;
@@ -131,5 +135,28 @@ describe('autoMap', () => {
     // notice that this time we're just handing it the list to work on:
     autoMap(theList, autoHandler, handleAutoResult, reduceResults);
     allDone();
+  });
+
+  it('optionally allows 2nd arg as object and injects it', (allDone) => {
+    const matchedFiles = ['file1.txt', 'file2.txt'];
+    const process = (item, done) => {
+      expect(matchedFiles).to.include(item);
+      return done();
+    };
+    const write = (file, processor, done) => {
+      return done();
+    };
+    autoMap(matchedFiles, {
+      process: ['item', (results, done) => {
+        process(results.item, done);
+      }],
+      write: ['process', (results, done) => {
+        write(results.file, results.process, done);
+      }]
+    }, (filename, results) => {
+      expect(matchedFiles).to.include(results.item);
+      expect(matchedFiles).to.include(filename);
+      return null;
+    }, allDone);
   });
 });
