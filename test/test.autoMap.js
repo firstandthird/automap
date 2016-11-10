@@ -137,15 +137,32 @@ describe('autoMap', () => {
     allDone();
   });
 
-  it('optionally allows 2nd arg as object and injects it', (allDone) => {
+  it('optionally allow 2nd arg as object', (allDone) => {
+    const matchedFiles = ['file1.txt', 'file2.txt'];
+    const process = (done) => {
+      return done(null, 'process');
+    };
+    const write = (results, done) => {
+      expect(results.process).to.equal('process');
+      return done(null, 'write');
+    };
+    autoMap(matchedFiles, {
+      process,
+      write: ['process', write]
+    }, (filename, results) => {
+      expect(results.process).to.equal('process');
+      expect(results.write).to.equal('write');
+      return null;
+    }, allDone);
+  });
+
+  it('injects "item" if not already included in the spec', (allDone) => {
     const matchedFiles = ['file1.txt', 'file2.txt'];
     const process = (item, done) => {
       expect(matchedFiles).to.include(item);
       return done();
     };
-    const write = (file, processor, done) => {
-      return done();
-    };
+    const write = (file, processor, done) => done();
     autoMap(matchedFiles, {
       process: ['item', (results, done) => {
         process(results.item, done);
@@ -159,4 +176,5 @@ describe('autoMap', () => {
       return null;
     }, allDone);
   });
+
 });
