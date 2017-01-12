@@ -1,7 +1,7 @@
 {
   "name": "automap",
   "description": "covers a common use-case with async.auto/async.each. map an async.auto flow to each item in an asynchronous list, then reduce and return",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "homepage": "https://github.com/firstandthird/autoMap",
   "repository": {
     "type": "git",
