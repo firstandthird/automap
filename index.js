@@ -17,7 +17,7 @@ module.exports = (createList, createAutoSpec, mapAutoResult, done) => {
       if (!spec.item) {
         spec.item = (specDone) => specDone(null, currentItem);
       }
-      async.auto(spec, (autoErr, anAutoResult) => {
+      async.autoInject(spec, (autoErr, anAutoResult) => {
         if (autoErr) {
           return done(autoErr);
         }

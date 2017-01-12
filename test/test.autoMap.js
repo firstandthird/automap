@@ -1,3 +1,4 @@
+/* global describe, it */
 'use strict';
 const expect = require('chai').expect;
 const autoMap = require('../');
@@ -31,17 +32,17 @@ describe('autoMap', () => {
       // notice that 'myTestItem' refers to the current item you are processing and
       // is available for use by the async.auto methods:
       return {
-        multiply: (done) => {
+        multiply(done) {
           return done(null, myTestItem.x * myTestItem.y);
         },
-        concat: (done) => {
+        concat(done) {
           return done(null, `${myTestItem.x},${myTestItem.y}`);
         },
-        both: ['concat', 'multiply', (results, done) => {
-          expect(results.multiply).to.equal(myTestItem.x * myTestItem.y);
-          expect(results.concat).to.equal(`${myTestItem.x},${myTestItem.y}`);
-          return done(null, `multiply was ${results.multiply} and concat was ${results.concat}`);
-        }]
+        both(concat, multiply, done) {
+          expect(multiply).to.equal(myTestItem.x * myTestItem.y);
+          expect(concat).to.equal(`${myTestItem.x},${myTestItem.y}`);
+          return done(null, `multiply was ${multiply} and concat was ${concat}`);
+        }
       };
     };
 
@@ -93,17 +94,17 @@ describe('autoMap', () => {
       // notice that 'myTestItem' refers to the current item you are processing and
       // is available for use by the async.auto methods:
       return {
-        multiply: (done) => {
+        multiply(done) {
           return done(null, myTestItem.x * myTestItem.y);
         },
-        concat: (done) => {
+        concat(done) {
           return done(null, `${myTestItem.x},${myTestItem.y}`);
         },
-        both: ['concat', 'multiply', (results, done) => {
-          expect(results.multiply).to.equal(myTestItem.x * myTestItem.y);
-          expect(results.concat).to.equal(`${myTestItem.x},${myTestItem.y}`);
-          return done(null, `multiply was ${results.multiply} and concat was ${results.concat}`);
-        }]
+        both(concat, multiply, done ) {
+          expect(multiply).to.equal(myTestItem.x * myTestItem.y);
+          expect(concat).to.equal(`${myTestItem.x},${myTestItem.y}`);
+          return done(null, `multiply was ${multiply} and concat was ${concat}`);
+        }
       };
     };
 
@@ -138,17 +139,14 @@ describe('autoMap', () => {
   });
 
   it('optionally allow 2nd arg as object', (allDone) => {
-    const matchedFiles = ['file1.txt', 'file2.txt'];
-    const process = (done) => {
-      return done(null, 'process');
-    };
-    const write = (results, done) => {
-      expect(results.process).to.equal('process');
-      return done(null, 'write');
-    };
-    autoMap(matchedFiles, {
-      process,
-      write: ['process', write]
+    autoMap(['file1.txt', 'file2.txt'], {
+      process(done) {
+        return done(null, 'process');
+      },
+      write(process, done) {
+        expect(process).to.equal('process');
+        return done(null, 'write');
+      }
     }, (filename, results) => {
       expect(results.process).to.equal('process');
       expect(results.write).to.equal('write');
@@ -158,23 +156,18 @@ describe('autoMap', () => {
 
   it('injects "item" if not already included in the spec', (allDone) => {
     const matchedFiles = ['file1.txt', 'file2.txt'];
-    const process = (item, done) => {
-      expect(matchedFiles).to.include(item);
-      return done();
-    };
-    const write = (file, processor, done) => done();
     autoMap(matchedFiles, {
-      process: ['item', (results, done) => {
-        process(results.item, done);
-      }],
-      write: ['process', (results, done) => {
-        write(results.file, results.process, done);
-      }]
+      process(item, done) {
+        expect(matchedFiles).to.include(item);
+        return done();
+      },
+      write(process, done) {
+        done();
+      }
     }, (filename, results) => {
       expect(matchedFiles).to.include(results.item);
       expect(matchedFiles).to.include(filename);
       return null;
     }, allDone);
   });
-
 });
