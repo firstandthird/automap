@@ -14,9 +14,7 @@ module.exports = (createList, createAutoSpec, mapAutoResult, done) => {
     async.map(listToProcess, (currentItem, currentItemDone) => {
       const spec = typeof createAutoSpec === 'function' ? createAutoSpec(currentItem) : createAutoSpec;
       // inject 'spec':
-      if (!spec.item) {
-        spec.item = (specDone) => specDone(null, currentItem);
-      }
+      spec.item = (specDone) => specDone(null, currentItem);
       async.autoInject(spec, (autoErr, anAutoResult) => {
         if (autoErr) {
           return done(autoErr);

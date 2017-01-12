@@ -156,8 +156,11 @@ describe('autoMap', () => {
 
   it('injects "item" if not already included in the spec', (allDone) => {
     const matchedFiles = ['file1.txt', 'file2.txt'];
+    let index = 0;
     autoMap(matchedFiles, {
       process(item, done) {
+        expect(matchedFiles[index]).to.equal(item);
+        index++;
         expect(matchedFiles).to.include(item);
         return done();
       },
