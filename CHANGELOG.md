@@ -1,4 +1,9 @@
 
+1.0.1 / 2017-01-12
+==================
+
+  * bug: always sets first element in array as the item
+
 1.0.0 / 2017-01-12
 ==================
 
