@@ -1,4 +1,11 @@
 
+1.1.0 / 2017-02-02
+==================
+
+  * added ability to pass in concurrency
+  * added itemIndex and itemCount
+  * add tape tests
+
 1.0.1 / 2017-01-12
 ==================
 
