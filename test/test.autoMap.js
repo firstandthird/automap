@@ -151,12 +151,14 @@ test('optionally allow 2nd arg as object', (t) => {
   }, t.end);
 });
 
-test('injects "item" if not already included in the spec', (t) => {
+test('injects "item", "itemIndex", "itemCount" if not already included in the spec', (t) => {
   const matchedFiles = ['file1.txt', 'file2.txt'];
   let index = 0;
   autoMap(matchedFiles, {
-    process(item, done) {
+    process(item, itemIndex, itemCount, done) {
       t.equal(matchedFiles[index], item);
+      t.equal(itemIndex, index);
+      t.equal(itemCount, matchedFiles.length);
       index++;
       let found = false;
       Object.keys(matchedFiles).forEach((file) => {
@@ -186,3 +188,4 @@ test('injects "item" if not already included in the spec', (t) => {
     return null;
   }, t.end);
 });
+

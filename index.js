@@ -11,15 +11,18 @@ module.exports = (createList, createAutoSpec, mapAutoResult, done) => {
     if (err) {
       return done(err);
     }
-    async.map(listToProcess, (currentItem, currentItemDone) => {
-      const spec = typeof createAutoSpec === 'function' ? createAutoSpec(currentItem) : createAutoSpec;
+    const items = listToProcess.map((value, index) => ({ index, value }));
+    async.map(items, (currentItem, currentItemDone) => {
+      const spec = typeof createAutoSpec === 'function' ? createAutoSpec(currentItem.value) : createAutoSpec;
       // inject 'spec':
-      spec.item = (specDone) => specDone(null, currentItem);
+      spec.item = (specDone) => specDone(null, currentItem.value);
+      spec.itemIndex = (specDone) => specDone(null, currentItem.index);
+      spec.itemCount = (specDone) => specDone(null, listToProcess.length);
       async.autoInject(spec, (autoErr, anAutoResult) => {
         if (autoErr) {
           return done(autoErr);
         }
-        currentItemDone(null, mapAutoResult(currentItem, anAutoResult));
+        currentItemDone(null, mapAutoResult(currentItem.value, anAutoResult));
       });
     }, done);
   };
