@@ -189,3 +189,26 @@ test('injects "item", "itemIndex", "itemCount" if not already included in the sp
   }, t.end);
 });
 
+test('allows limit param to be passed in', (t) => {
+  const matchedFiles = ['file1.txt', 'file2.txt'];
+  let index = 0;
+  autoMap(matchedFiles, 1, {
+    process(item, itemIndex, itemCount, done) {
+      const timeout = (index === 0) ? 500 : 10;
+      const i = index;
+      setTimeout(() => {
+        if (index === 1) {
+          t.equal(i, 1);
+        }
+        index++;
+        done();
+      }, timeout);
+    },
+    write(process, done) {
+      done();
+    }
+  },
+  (filename, results) => (results),
+  t.end);
+});
+

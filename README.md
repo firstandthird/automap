@@ -16,6 +16,7 @@ autoMap(
       status: 'alive',
     }).toArray(next);
   },
+  concurrency, //optional
   // a function returning an async.autoInject param object for each character,
   // to process how much damage to incur
   // see (http://caolan.github.io/async/docs.html#.auto) for more)

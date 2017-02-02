@@ -6,13 +6,23 @@ const async = require('async');
 // the third param is a callback function that combines the original listed item with the
 // result of applying async.auto to that item
 // fourth param is a callback that takes in all results:
-module.exports = (createList, createAutoSpec, mapAutoResult, done) => {
+module.exports = (createList, limit, createAutoSpec, mapAutoResult, done) => {
+  if (typeof limit !== 'number') {
+    done = mapAutoResult;
+    mapAutoResult = createAutoSpec;
+    createAutoSpec = limit;
+    limit = null;
+  }
   const callback = (err, listToProcess) => {
     if (err) {
       return done(err);
     }
     const items = listToProcess.map((value, index) => ({ index, value }));
-    async.map(items, (currentItem, currentItemDone) => {
+    const params = [items];
+    if (limit) {
+      params.push(limit);
+    }
+    params.push((currentItem, currentItemDone) => {
       const spec = typeof createAutoSpec === 'function' ? createAutoSpec(currentItem.value) : createAutoSpec;
       // inject 'spec':
       spec.item = (specDone) => specDone(null, currentItem.value);
@@ -25,6 +35,8 @@ module.exports = (createList, createAutoSpec, mapAutoResult, done) => {
         currentItemDone(null, mapAutoResult(currentItem.value, anAutoResult));
       });
     }, done);
+    const fn = (limit) ? async.mapLimit : async.map;
+    fn.apply(null, params);
   };
   // if createList is a function:
   if (typeof createList === 'function') {
